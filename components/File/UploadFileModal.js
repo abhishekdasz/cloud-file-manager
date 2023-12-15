@@ -24,15 +24,18 @@ function UploadFileModal({closeModal}) {
         }).then(resp=>{
           getDownloadURL(fileRef).then(async(downloadURL) => {
             console.log('File available at', downloadURL);
-            await setDoc(doc(db,"files",docID.toString()),{
-              name:file.name,
-              type:file.name.split(".")[1],
-              size:file.size,
-              modifiedAt:file.lastModified,
-              createdBy:session.user.email,
-              parentFolderId:parentFolderId,
-              imageUrl:downloadURL
-            });
+            const fileData = {
+              id: docID.toString(),
+              name: file.name,
+              type: file.name.split(".")[1],
+              size: file.size,
+              modifiedAt: file.lastModified,
+              createdBy: session.user.email,
+              parentFolderId: parentFolderId,
+              imageUrl: downloadURL
+          };
+  
+          await setDoc(doc(db, "files", fileData.id), fileData);
             closeModal(true);
         setShowToastMsg("✅File Upload Successfully")
           });
